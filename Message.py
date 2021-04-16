@@ -69,10 +69,39 @@ def binary_string_to_image(binary_string,image_file_name):
     destination_image_file.write(base64.b64decode((bytes_to_save)))
     destination_image_file.close()
 
+ """Function which tripple bits in the binary sting eg(101 -> 111000111)"""
 
-def main():
-    test_binary_string = image_to_binary_string(test_image_file_name)
-    binary_string_to_image(test_binary_string, saved_test_image)
+    def bits_trippling(self, binary_string):
+        trippled_binary_string = ""
+        for i in binary_string:
+            for j in range(0, 3):
+                trippled_binary_string += i
+        return(trippled_binary_string)
 
+    """Function that decodes trippled binary string eg.(111000111 -> 101)"""
 
-main()
+    def decode_trippled_bits(self, trippled_binary_string):
+        decoded_binary_string = ""
+        for count, i in enumerate(trippled_binary_string):
+            if (count+1) % 3 == 0:
+                decoded_binary_string += i
+        return(binary_string)
+
+  
+    """Forward error correction Hamming code binary_string = "1 0 0 0 1 0 1 0 0 1 1 1 0 1 1 0" """
+
+    def hamming_code(self, binary_string):
+        temp_list = (binary_string.split())
+        int_list_binary = list(map(int, temp_list))
+        mistake = reduce(
+            xor, [i for i, bit in enumerate(int_list_binary) if bit])
+        if mistake != 0:
+            print('Mistake found at the position ', mistake, ' and corrected')
+            if(int_list_binary[mistake] == 1):
+                int_list_binary[mistake] = 0
+            else:
+                int_list_binary[mistake] = 1
+            print(int_list_binary)
+        else:
+            print("No mistake found !")
+
