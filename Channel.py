@@ -70,10 +70,10 @@ class Channel:
 
 #TESTING
 def main():
-    sent_bits = "00000000000000000000"
+    sent_bits = "000000000000000000000"
     print (sent_bits)
     channel = Channel(sent_bits)
     recived_bits = channel.random_error_number(5)
     print (recived_bits)
 
-main()
+main() 
