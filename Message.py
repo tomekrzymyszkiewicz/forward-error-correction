@@ -131,19 +131,27 @@ def decode_trippled_bits(self, trippled_binary_string):
         return(decoded_binary_string)
 
 
-def hamming_code(self, binary_string):
-    """Forward error correction Hamming code binary_string = "1 0 0 0 1 0 1 0 0 1 1 1 0 1 1 0" 
-    """
-    temp_list = (binary_string.split())
-    int_list_binary = list(map(int, temp_list))
-    mistake = reduce(
-        xor, [i for i, bit in enumerate(int_list_binary) if bit])
-    if mistake != 0:
-        print('Mistake found at the position ', mistake, ' and corrected')
-        if(int_list_binary[mistake] == 1):
-            int_list_binary[mistake] = 0
+    def hamming_code(self, binary_string):
+        """Hamming code - error corection code finding single error 
+        """
+        decoded_string=""
+        temp_list = list(binary_string)
+        int_list_binary = list(map(int, temp_list))
+       
+        mistake = reduce(
+            xor, [i for i, bit in enumerate(int_list_binary) if bit])
+        if mistake != 0:
+            print('Mistake found at the position ', mistake, ' and corrected')
+            if(int_list_binary[mistake] == 1):
+                int_list_binary[mistake] = 0
+            else:
+                int_list_binary[mistake] = 1
+            
+            for i in int_list_binary:
+                decoded_string += str(i)
+            return(decoded_string)
         else:
-            int_list_binary[mistake] = 1
-        print(int_list_binary)
-    else:
-        print("No mistake found !")
+            print("No mistake found !")
+            for i in int_list_binary:
+                decoded_string += str(i)
+            return(decoded_string)
