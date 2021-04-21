@@ -51,7 +51,7 @@ def bytes_string_to_binary_string(text, encoding='utf-8', errors='surrogatepass'
 
 
 def binary_string_to_bytes_string(bits, encoding='utf-8', errors='surrogatepass'):
-    """Convert binary string (e.g. 100100101) to bytes string (e.g. fE4%) then return bytes string
+    """Convert binary string (e.g. 100100101) to bytes string (e.g. fE45) then return bytes string
     """
     n = int(bits, 2)
     return int2bytes(n).decode(encoding, errors)
@@ -66,6 +66,7 @@ def int2bytes(i):
 def image_to_binary_string(image_file_name):
     """Load image (e.g. jpg) and return as binary string
     """
+    #sczytać tablicę pikseli
     with open(image_file_name, "rb") as loaded_image:
         image_as_string = base64.b64encode(loaded_image.read()).decode('utf-8')
     return bytes_string_to_binary_string(image_as_string)
@@ -80,16 +81,17 @@ def binary_string_to_image(binary_string, image_file_name):
     destination_image_file.close()
 
 
-def bits_trippling(self, binary_string):
+def bits_trippling(binary_string):
     """Function which tripple bits in the binary sting eg(101 -> 111000111)
     """
+    #spróbować abcabcabc
     trippled_binary_string = ""
     for i in binary_string:
         for j in range(0, 3):
             trippled_binary_string += i
     return(trippled_binary_string)
 """Function that decodes trippled binary string eg.(111000111 -> 101)"""
-def decode_trippled_bits(self, trippled_binary_string):
+def decode_trippled_bits(trippled_binary_string):
     decoded_binary_string = ""
     for count, i in enumerate(trippled_binary_string):
         if (count+1) % 3 == 0:

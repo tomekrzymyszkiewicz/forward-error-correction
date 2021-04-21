@@ -8,6 +8,7 @@ class Channel:
 #FIRST GROUP OF NOISE IN THIS GROUP MISTAKES CAN OVERLAP SO IN RESULT CAN BE LESS AMOUNT OF MISTAKES
     def random_error(self, intensity):          #generating mistakes randomly, number of mistakes depends of intensity parametr - proprtional to length of message
         mistakes = len(self.bits)*intensity/100
+        #mieszanie tablicy i  wybór n pierwszych elementów (losowanie bez powtórzeń)
         for i in range(0, mistakes):
             n = random.randint(0, len(self.bits) - 1) 
             if self.bits[n] == 0:
@@ -23,7 +24,10 @@ class Channel:
                 self.bits[n] = 1
             else:
                  self.bits[n] = 0
-        return str(self.bits)
+        return_string = ""
+        for i in self.bits:
+            return_string += str(i)
+        return return_string
 
     def group_error(self, intensity):            #generating mistakes in groups, number of mistakes depends of "intensity" parametr - proprtional to length of message
         mistakes = len(self.bits)*intensity/100  #random size and number of groups
@@ -68,12 +72,4 @@ class Channel:
     def group_noise(self, space, size):         #generating group of mistakes averge every "number" in channel, size of group averge "size"
         pass
 
-#TESTING
-def main():
-    sent_bits = "000000000000000000000"
-    print (sent_bits)
-    channel = Channel(sent_bits)
-    recived_bits = channel.random_error_number(5)
-    print (recived_bits)
 
-main() 
