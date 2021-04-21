@@ -90,20 +90,57 @@ def bits_trippling(binary_string):
         for j in range(0, 3):
             trippled_binary_string += i
     return(trippled_binary_string)
-"""Function that decodes trippled binary string eg.(111000111 -> 101)"""
-def decode_trippled_bits(trippled_binary_string):
-    decoded_binary_string = ""
-    for count, i in enumerate(trippled_binary_string):
-        if (count+1) % 3 == 0:
-            decoded_binary_string += i
-    return(decoded_binary_string)
+
+
+def decode_trippled_bits(self, trippled_binary_string):
+        """Function that decodes trippled binary string eg.(111000111 -> 101)
+        """
+        decoded_binary_string = ""
+        first = ""
+        second = ""
+        third = ""
+        for i in range(0, int(len(trippled_binary_string)/3)):
+            first += trippled_binary_string[3*i+0]
+            second += trippled_binary_string[3*i+1]
+            third += trippled_binary_string[3*i+2]
+
+        for i, bit in enumerate(first):
+            if(bit == second[i] and bit == third[i]):
+                decoded_binary_string += bit
+            else:
+                count_0 = 0
+                count_1 = 0
+
+                if bit == '0':
+                    count_0 += 1
+                else:
+                    count_1 += 1
+
+                if second[i] == '0':
+                    count_0 += 1
+                else:
+                    count_1 += 1
+
+                if third[i] == '0':
+                    count_0 += 1
+                else:
+                    count_1 += 1
+
+                if count_0 > count_1:
+                    decoded_binary_string += '0'
+                elif count_0 < count_1:
+                    decoded_binary_string += '1'
+
+        return(decoded_binary_string)
 
 
 def hamming_code(self, binary_string):
-    """Forward error correction Hamming code binary_string = "1 0 0 0 1 0 1 0 0 1 1 1 0 1 1 0" 
+    """Hamming code - error corection code finding single error 
     """
-    temp_list = (binary_string.split())
+    decoded_string=""
+    temp_list = list(binary_string)
     int_list_binary = list(map(int, temp_list))
+   
     mistake = reduce(
         xor, [i for i, bit in enumerate(int_list_binary) if bit])
     if mistake != 0:
@@ -112,6 +149,12 @@ def hamming_code(self, binary_string):
             int_list_binary[mistake] = 0
         else:
             int_list_binary[mistake] = 1
-        print(int_list_binary)
+        
+        for i in int_list_binary:
+            decoded_string += str(i)
+        return(decoded_string)
     else:
         print("No mistake found !")
+        for i in int_list_binary:
+            decoded_string += str(i)
+        return(decoded_string)
