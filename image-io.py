@@ -1,10 +1,42 @@
 import base64
 import binascii
+from typing import Sized
+from PIL import Image
+import numpy as np
+from bitstring import BitArray
+import io
 
 test_image_file_name = "test_image.jpeg"
 test_binary_file_name = "binary_image.bin"
 saved_test_image = "save_image.jpeg"
+##########################################
+class Image_message:
+    def __init__(self,file_name):
+        try:
+            image  = Image.open(file_name,mode='r')
+        except IOError:
+            print("Image loading error")
+        self.size = image.size
+        self.mode = image.mode
+        # self.image_bytes = image.tobytes()
+        byte_array = io.BytesIO()
+        image.save(byte_array,format=image.format)
+        print(byte_array.getvalue())
+        self.image_bits = ""
+        # print(len(byte_array.getvalue()))
+        for byte in byte_array.getvalue():
+            byte = "{:08b}".format(byte)
+            self.image_bits += byte
+    def print_bits(self):
+        print(self.image_bits)
+    def save(self):
+        bytes_array = bytes(int(self.image_bits[i : i + 8], 2) for i in range(0, len(self.image_bits), 8))
+        print(bytes_array)
+        image = Image.frombytes(self.mode,self.size,bytes_array)
+        image.show()
+        pass
 
+##########################################
 
 def image_file_to_bin_file(image_file_name, binary_file_name):
     """Load image file (.jpg), convert to bytes string then save to .bin file
@@ -71,8 +103,14 @@ def binary_string_to_image(binary_string,image_file_name):
 
 
 def main():
-    test_binary_string = image_to_binary_string(test_image_file_name)
-    binary_string_to_image(test_binary_string, saved_test_image)
+    # test_binary_string = image_to_binary_string(test_image_file_name)
+    # binary_string_to_image(test_binary_string, saved_test_image)
+    image = Image_message(test_image_file_name)
+    image.print_bits()
+    image.save()
+    # saved_image = Image.frombytes(image_bytes)
+    # image.save(saved_test_image)
+    
 
 
 main()
