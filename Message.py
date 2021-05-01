@@ -48,10 +48,11 @@ class Image_message:
             third = np.array(separated_binary_array[2])
             decoded_binary_image_bits = np.zeros(len(self.image_bits),dtype=np.uint8)
             for i in range(0, len(self.image_bits)):
-                bit = first[i]
-                if(bit == second[i] and bit == third[i]):
-                    decoded_binary_image_bits[i] = bit
+                if(first[i] == second[i] == third[i]):
+                    decoded_binary_image_bits[i] = first[i]
                 else:
+                    bit = first[i]
+
                     count_0 = 0
                     count_1 = 0
 
