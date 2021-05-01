@@ -13,28 +13,21 @@ saved_test_image = "save_image.jpeg"
 class Image_message:
     def __init__(self,file_name):
         try:
-            image  = Image.open(file_name,mode='r')
+            image  = Image.open(file_name)
         except IOError:
             print("Image loading error")
         self.size = image.size
-        self.mode = image.mode
-        # self.image_bytes = image.tobytes()
-        byte_array = io.BytesIO()
-        image.save(byte_array,format=image.format)
-        print(byte_array.getvalue())
-        self.image_bits = ""
-        # print(len(byte_array.getvalue()))
-        for byte in byte_array.getvalue():
-            byte = "{:08b}".format(byte)
-            self.image_bits += byte
+        pixels = np.asarray(image, dtype=np.uint8)
+        self.image_bits = np.unpackbits(pixels)
+        
     def print_bits(self):
         print(self.image_bits)
+
     def save(self):
-        bytes_array = bytes(int(self.image_bits[i : i + 8], 2) for i in range(0, len(self.image_bits), 8))
-        print(bytes_array)
-        image = Image.frombytes(self.mode,self.size,bytes_array)
-        image.show()
-        pass
+        packed_bits = np.packbits(self.image_bits)
+        packed_bits_reshaped = np.reshape(packed_bits,(self.size[1],self.size[0],3))
+        image = Image.fromarray(packed_bits_reshaped)
+        image.save(saved_test_image)
 
 ##########################################
 
@@ -105,9 +98,11 @@ def binary_string_to_image(binary_string,image_file_name):
 def main():
     # test_binary_string = image_to_binary_string(test_image_file_name)
     # binary_string_to_image(test_binary_string, saved_test_image)
+
     image = Image_message(test_image_file_name)
-    image.print_bits()
+    # image.print_bits()
     image.save()
+
     # saved_image = Image.frombytes(image_bytes)
     # image.save(saved_test_image)
     
