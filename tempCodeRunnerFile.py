@@ -1,1 +1,0 @@
-zapisana_grafika
