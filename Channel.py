@@ -1,4 +1,8 @@
+import numpy as np
 import random
+
+from numpy.core.fromnumeric import size
+
 class Channel:
     def __init__(self, bits_array):
         self.bits = bits_array
@@ -16,12 +20,11 @@ class Channel:
         return str(self.bits)
     
     def random_error_number(self, mistakes):     #generating mistakes randomly, number of mistakes given by "mistakes"
-        for i in range(0, mistakes):
-            n = random.randint(0, len(self.bits) - 1) 
-            if self.bits[n] == 0:
-                self.bits[n] = 1
-            else:
-                 self.bits[n] = 0
+        index_array = np.arange(len(self.bits))
+        np.random.shuffle(index_array)
+        mistakes_array = index_array[0:mistakes]
+        for i in mistakes_array:
+            self.bits[i] = (self.bits[i]+1)%2
         return self.bits
 
     def group_error(self, intensity):            #generating mistakes in groups, number of mistakes depends of "intensity" parametr - proprtional to length of message
