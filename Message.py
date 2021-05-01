@@ -42,15 +42,11 @@ class Image_message:
             """Function that decodes trippled binary
             """
             print("decoding trippled bits")
-            decoded_binary_image_bits = np.zeros(len(self.image_bits))
-            first = np.zeros(len(self.image_bits))
-            second = np.zeros(len(self.image_bits))
-            third = np.zeros(len(self.image_bits))
-            for i in range(0, len(self.image_bits)):
-                first[i] += trippled_binary_array[3*i+0]
-                second[i] += trippled_binary_array[3*i+1]
-                third[i] += trippled_binary_array[3*i+2]
-
+            separated_binary_array = np.reshape(trippled_binary_array,(3,-1),order='F')
+            first = np.array(separated_binary_array[0])
+            second = np.array(separated_binary_array[1])
+            third = np.array(separated_binary_array[2])
+            decoded_binary_image_bits = np.zeros(len(self.image_bits),dtype=np.uint8)
             for i in range(0, len(self.image_bits)):
                 bit = first[i]
                 if(bit == second[i] and bit == third[i]):
