@@ -1,9 +1,7 @@
 import random
 class Channel:
-    def __init__(self, bits_string):
-        self.bits = []
-        for i in range (0, len(bits_string)):
-            self.bits.append(int(bits_string[i]))
+    def __init__(self, bits_array):
+        self.bits = bits_array
 
 #FIRST GROUP OF NOISE IN THIS GROUP MISTAKES CAN OVERLAP SO IN RESULT CAN BE LESS AMOUNT OF MISTAKES
     def random_error(self, intensity):          #generating mistakes randomly, number of mistakes depends of intensity parametr - proprtional to length of message
@@ -24,10 +22,7 @@ class Channel:
                 self.bits[n] = 1
             else:
                  self.bits[n] = 0
-        return_string = ""
-        for i in self.bits:
-            return_string += str(i)
-        return return_string
+        return self.bits
 
     def group_error(self, intensity):            #generating mistakes in groups, number of mistakes depends of "intensity" parametr - proprtional to length of message
         mistakes = len(self.bits)*intensity/100  #random size and number of groups

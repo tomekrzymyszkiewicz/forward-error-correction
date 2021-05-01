@@ -26,57 +26,60 @@ class Image_message:
         image = Image.fromarray(packed_bits_reshaped)
         image.save(file_name)
 
-def bits_trippling(binary_string):
-    """Function which tripple bits in the binary sting eg(101 -> 111000111)
-    """
-    #spróbować abcabcabc
-    trippled_binary_string = ""
-    for i in binary_string:
-        for j in range(0, 3):
-            trippled_binary_string += i
-    return(trippled_binary_string)
-
-
-def decode_trippled_bits(self, trippled_binary_string):
-        """Function that decodes trippled binary string eg.(111000111 -> 101)
+    def bits_trippling(self):
+        """Function which return trippled bits of image pixels
         """
-        decoded_binary_string = ""
-        first = ""
-        second = ""
-        third = ""
-        for i in range(0, int(len(trippled_binary_string)/3)):
-            first += trippled_binary_string[3*i+0]
-            second += trippled_binary_string[3*i+1]
-            third += trippled_binary_string[3*i+2]
+        #spróbować abcabcabc
+        print("trippling bits")
+        trippled_binary_image_bits = np.array((self.image_bits,self.image_bits,self.image_bits))
+        trippled_binary_image_bits = np.reshape(trippled_binary_image_bits,3*len(self.image_bits),order='F')
+        # for i in range(0,len(self.image_bits)):
+        #     for j in range(0, 3):
+        #         trippled_binary_image_bits[i+j] = self.image_bits[i]
+        return trippled_binary_image_bits
+        
+    def decode_trippled_bits(self, trippled_binary_array):
+            """Function that decodes trippled binary
+            """
+            print("decoding trippled bits")
+            decoded_binary_image_bits = np.zeros(len(self.image_bits))
+            first = np.zeros(len(self.image_bits))
+            second = np.zeros(len(self.image_bits))
+            third = np.zeros(len(self.image_bits))
+            for i in range(0, len(self.image_bits)):
+                first[i] += trippled_binary_array[3*i+0]
+                second[i] += trippled_binary_array[3*i+1]
+                third[i] += trippled_binary_array[3*i+2]
 
-        for i, bit in enumerate(first):
-            if(bit == second[i] and bit == third[i]):
-                decoded_binary_string += bit
-            else:
-                count_0 = 0
-                count_1 = 0
-
-                if bit == '0':
-                    count_0 += 1
+            for i in range(0, len(self.image_bits)):
+                bit = first[i]
+                if(bit == second[i] and bit == third[i]):
+                    decoded_binary_image_bits[i] = bit
                 else:
-                    count_1 += 1
+                    count_0 = 0
+                    count_1 = 0
 
-                if second[i] == '0':
-                    count_0 += 1
-                else:
-                    count_1 += 1
+                    if bit == 0:
+                        count_0 += 1
+                    else:
+                        count_1 += 1
 
-                if third[i] == '0':
-                    count_0 += 1
-                else:
-                    count_1 += 1
+                    if second[i] == 0:
+                        count_0 += 1
+                    else:
+                        count_1 += 1
 
-                if count_0 > count_1:
-                    decoded_binary_string += '0'
-                elif count_0 < count_1:
-                    decoded_binary_string += '1'
+                    if third[i] == 0:
+                        count_0 += 1
+                    else:
+                        count_1 += 1
 
-        return(decoded_binary_string)
+                    if count_0 > count_1:
+                        decoded_binary_image_bits[i] = 0
+                    elif count_0 < count_1:
+                        decoded_binary_image_bits[i] = 1
+
+            return decoded_binary_image_bits
 
 
 def hamming_code(self, binary_string):
