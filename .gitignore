@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+.jpg
+.jpeg
+.png
+.bin
+tempCodeRunnerFile.py

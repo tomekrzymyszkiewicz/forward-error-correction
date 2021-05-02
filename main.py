@@ -1,13 +1,16 @@
-import Channel
-from Channel import Channel as channel
-import Message 
+from Channel import Channel
+from Message import Image_message
+
+test_image_file_name = "test_image.jpeg"
+saved_test_image = "save_image.jpeg"
 
 def main():
-    wiadomosc = Message.image_to_binary_string("test_image.jpeg")
-    wiadomosc_zakodowana = Message.bits_trippling(wiadomosc)
-    kanal = channel(wiadomosc_zakodowana)
-    otrzymana_wiadomosc = kanal.random_error_number(6)
-    wiadomosc_zdekodowana = Message.decode_trippled_bits(otrzymana_wiadomosc)
-    Message.binary_string_to_image(wiadomosc_zdekodowana,"zapisana_grafika.jpg")
+    image = Image_message(test_image_file_name)
+    trippled_message = image.bits_trippling()
+    channel = Channel(trippled_message)
+    trippled_message_with_errors = channel.random_error_number(4000000)
+    decoded__message = Image_message.decode_trippled_bits(image,trippled_message_with_errors)
+    image.image_bits = decoded__message
+    image.save(saved_test_image)
 
 main()

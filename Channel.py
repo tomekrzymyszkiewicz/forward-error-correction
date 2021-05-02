@@ -1,9 +1,11 @@
+import numpy as np
 import random
+
+from numpy.core.fromnumeric import size
+
 class Channel:
-    def __init__(self, bits_string):
-        self.bits = []
-        for i in range (0, len(bits_string)):
-            self.bits.append(int(bits_string[i]))
+    def __init__(self, bits_array):
+        self.bits = bits_array
 
 #FIRST GROUP OF NOISE IN THIS GROUP MISTAKES CAN OVERLAP SO IN RESULT CAN BE LESS AMOUNT OF MISTAKES
     def random_error(self, intensity):          #generating mistakes randomly, number of mistakes depends of intensity parametr - proprtional to length of message
@@ -18,16 +20,12 @@ class Channel:
         return str(self.bits)
     
     def random_error_number(self, mistakes):     #generating mistakes randomly, number of mistakes given by "mistakes"
-        for i in range(0, mistakes):
-            n = random.randint(0, len(self.bits) - 1) 
-            if self.bits[n] == 0:
-                self.bits[n] = 1
-            else:
-                 self.bits[n] = 0
-        return_string = ""
-        for i in self.bits:
-            return_string += str(i)
-        return return_string
+        index_array = np.arange(len(self.bits))
+        np.random.shuffle(index_array)
+        mistakes_array = index_array[0:mistakes]
+        for i in mistakes_array:
+            self.bits[i] = (self.bits[i]+1)%2
+        return self.bits
 
     def group_error(self, intensity):            #generating mistakes in groups, number of mistakes depends of "intensity" parametr - proprtional to length of message
         mistakes = len(self.bits)*intensity/100  #random size and number of groups
