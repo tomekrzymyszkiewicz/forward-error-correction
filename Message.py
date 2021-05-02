@@ -30,18 +30,13 @@ class Image_message:
         """Function which return trippled bits of image pixels
         """
         #spróbować abcabcabc
-        print("trippling bits")
         trippled_binary_image_bits = np.array((self.image_bits,self.image_bits,self.image_bits))
         trippled_binary_image_bits = np.reshape(trippled_binary_image_bits,3*len(self.image_bits),order='F')
-        # for i in range(0,len(self.image_bits)):
-        #     for j in range(0, 3):
-        #         trippled_binary_image_bits[i+j] = self.image_bits[i]
         return trippled_binary_image_bits
         
     def decode_trippled_bits(self, trippled_binary_array):
             """Function that decodes trippled binary
             """
-            print("decoding trippled bits")
             separated_binary_array = np.reshape(trippled_binary_array,(3,-1),order='F')
             first = np.array(separated_binary_array[0])
             second = np.array(separated_binary_array[1])
@@ -50,32 +45,10 @@ class Image_message:
             for i in range(0, len(self.image_bits)):
                 if(first[i] == second[i] == third[i]):
                     decoded_binary_image_bits[i] = first[i]
+                elif(first[i] == second[i]):
+                    decoded_binary_image_bits[i] = first[i]
                 else:
-                    bit = first[i]
-
-                    count_0 = 0
-                    count_1 = 0
-
-                    if bit == 0:
-                        count_0 += 1
-                    else:
-                        count_1 += 1
-
-                    if second[i] == 0:
-                        count_0 += 1
-                    else:
-                        count_1 += 1
-
-                    if third[i] == 0:
-                        count_0 += 1
-                    else:
-                        count_1 += 1
-
-                    if count_0 > count_1:
-                        decoded_binary_image_bits[i] = 0
-                    elif count_0 < count_1:
-                        decoded_binary_image_bits[i] = 1
-
+                    decoded_binary_image_bits[i] = third[i]
             return decoded_binary_image_bits
 
 
