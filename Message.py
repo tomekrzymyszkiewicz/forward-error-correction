@@ -56,13 +56,13 @@ class CorectionCodes:
         """Load message bits
         """
 
-    def __init__(self,message_bits):
+    def __init__(self, message_bits):
         """Load message bits
         """
         self.message_bits = message_bits
 
 
-    def hamming_code(self, message_bits):
+    def hamming_code(message_bits):
         """Hamming code(7,4) 
         """
         haming_coded_bits = []
@@ -98,9 +98,10 @@ class CorectionCodes:
             haming_coded_bits[j] = message_bits[i]
             i += 1
 
+        return haming_coded_bits
 
-    def decode_hamming_code(self, haming_coded_bits):
-        """decode Hamming code(7,4) 
+    def decode_hamming_code(haming_coded_bits):
+        """Decode Hamming code(7,4) 
         """
         decoded_haming_coded_bits = []
         i = 0
@@ -124,48 +125,22 @@ class CorectionCodes:
                 iterator += 1    
 
             if detection == 7:
-                decoded_haming_coded_bits[i] =  int(not decoded_haming_coded_bits[i])
+                decoded_haming_coded_bits[j] =  int(not decoded_haming_coded_bits[j])
             if detection == 6:
-                decoded_haming_coded_bits[i + 1] =  int(not decoded_haming_coded_bits[i])
+                decoded_haming_coded_bits[j + 1] =  int(not decoded_haming_coded_bits[j + 1])
             if detection == 5:
-                decoded_haming_coded_bits[i + 2] =  int(not decoded_haming_coded_bits[i])
+                decoded_haming_coded_bits[j + 2] =  int(not decoded_haming_coded_bits[j + 1])
             if detection == 3:
-                decoded_haming_coded_bits[i + 3] =  int(not decoded_haming_coded_bits[i])
+                decoded_haming_coded_bits[j + 3] =  int(not decoded_haming_coded_bits[j + 1])
               
             i += 7
             j += 4
 
-        while i < len(haming_coded_bits):          #NIE WIELOKROTNOSCI 4/7
+        while i < len(haming_coded_bits): 
             decoded_haming_coded_bits.append(0)
             decoded_haming_coded_bits[j] = haming_coded_bits[i]
             decoded_haming_coded_bits[j] = haming_coded_bits[i]
             i += 1
 
+        return decoded_haming_coded_bits
 
-
-            
-
-def hamming_code(self, binary_string):
-    """Hamming code - error corection code finding single error 
-    """
-    decoded_string=""
-    temp_list = list(binary_string)
-    int_list_binary = list(map(int, temp_list))
-   
-    mistake = reduce(
-        xor, [i for i, bit in enumerate(int_list_binary) if bit])
-    if mistake != 0:
-        print('Mistake found at the position ', mistake, ' and corrected')
-        if(int_list_binary[mistake] == 1):
-            int_list_binary[mistake] = 0
-        else:
-            int_list_binary[mistake] = 1
-        
-        for i in int_list_binary:
-            decoded_string += str(i)
-        return(decoded_string)
-    else:
-        print("No mistake found !")
-        for i in int_list_binary:
-            decoded_string += str(i)
-        return(decoded_string)
