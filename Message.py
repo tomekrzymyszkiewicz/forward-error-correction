@@ -2,6 +2,7 @@ from PIL import Image
 import numpy as np
 from functools import reduce
 from operator import xor
+import komm as komm
 
 test_image_file_name = "test_image.jpeg"
 saved_test_image = "save_image.jpeg"
@@ -18,6 +19,7 @@ class Image_message:
         pixels = np.asarray(image, dtype=np.uint8)
         self.image_bits = np.unpackbits(pixels)
 
+
     def save(self,file_name):
         """Save image to file with current pixel data (as 'image_bits')
         """
@@ -26,18 +28,28 @@ class Image_message:
         image = Image.fromarray(packed_bits_reshaped)
         image.save(file_name)
 
-    def bits_trippling(self):
-        """Function which return trippled bits of image pixels
+    def bits_trippling_1(self):
+        """Function which return trippled bits in order aaabbbccc
         """
-        #spróbować abcabcabc
-        trippled_binary_image_bits = np.array((self.image_bits,self.image_bits,self.image_bits))
-        trippled_binary_image_bits = np.reshape(trippled_binary_image_bits,3*len(self.image_bits),order='F')
+        bits = np.array((self.image_bits))
+        trippled_binary_image_bits = np.repeat(bits, 3)
         return trippled_binary_image_bits
-        
-    def decode_trippled_bits(self, trippled_binary_array):
-            """Function that decodes trippled binary
+    
+
+    def bits_trippling_2(self):
+        """Function which return trippled bits in order abcabcabc
+        """
+        bits = np.array((self.image_bits))
+        trippled_bits = np.append(bits,[bits,bits])
+        return trippled_bits
+
+
+    def decode_trippled_bits(self, trippled_binary_array,order_char):
+            """Function that decodes trippled bits
+            order_char for bits_trippling_1 = 'F' - Fortran order
+            order_char for bits_trippling_2 = 'C' - C order
             """
-            separated_binary_array = np.reshape(trippled_binary_array,(3,-1),order='F')
+            separated_binary_array = np.reshape(trippled_binary_array,(3,-1), order = order_char)
             first = np.array(separated_binary_array[0])
             second = np.array(separated_binary_array[1])
             third = np.array(separated_binary_array[2])
@@ -51,28 +63,55 @@ class Image_message:
                     decoded_binary_image_bits[i] = third[i]
             return decoded_binary_image_bits
 
+    def calculate_overflow(self):
+        bits = np.array(self.image_bits)
+        code = komm.HammingCode(10)
+        additional_zeros =  (int(len(bits)/code.dimension+1) * code.dimension) - len(bits)
+        return additional_zeros
 
-def hamming_code(self, binary_string):
-    """Hamming code - error corection code finding single error 
-    """
-    decoded_string=""
-    temp_list = list(binary_string)
-    int_list_binary = list(map(int, temp_list))
-   
-    mistake = reduce(
-        xor, [i for i, bit in enumerate(int_list_binary) if bit])
-    if mistake != 0:
-        print('Mistake found at the position ', mistake, ' and corrected')
-        if(int_list_binary[mistake] == 1):
-            int_list_binary[mistake] = 0
-        else:
-            int_list_binary[mistake] = 1
+    def hamming_encode(self):
+        bits = np.array(self.image_bits)
+        code = komm.HammingCode(10)
         
-        for i in int_list_binary:
-            decoded_string += str(i)
-        return(decoded_string)
-    else:
-        print("No mistake found !")
-        for i in int_list_binary:
-            decoded_string += str(i)
-        return(decoded_string)
+        if (len(bits)%code.dimension > 0):
+            
+            additional_zeros =  (int(len(bits)/code.dimension+1) * code.dimension) - len(bits)
+            bits = np.append(bits, [np.zeros(additional_zeros,dtype = np.uint8)])
+            number_of_arrays = int(len(bits)/code.dimension)
+            parts_to_encode = np.reshape(bits,(number_of_arrays,-1),order ='C')
+
+            encoded_parts =[]
+            for i in range (0, len(parts_to_encode)):
+                encoded_part =  code.encode(parts_to_encode[i])
+                encoded_parts.append(encoded_part)
+            encoded_parts = np.array(encoded_parts)
+
+            return encoded_parts
+
+        elif (len(bits)%code.dimension == 0):
+            number_of_arrays = int(len(bits)/code.dimension)
+            parts_to_encode = np.reshape(bits,(number_of_arrays,-1),order ='C')
+
+            encoded_parts =[]
+            for i in range (0, len(parts_to_encode)):
+                encoded_part =  code.encode(parts_to_encode[i])
+                encoded_parts.append(encoded_part)
+            encoded_parts = np.array(encoded_parts)
+
+            return encoded_parts
+
+
+    def hamming_decode(self,encoded_parts):
+            
+            code = komm.HammingCode(10)
+            decoded_parts = []
+            for i in range (0, len(encoded_parts)):
+                decoded_part = code.decode(encoded_parts[i])
+                decoded_parts.append(decoded_part)
+            
+            decoded_parts = np.array(decoded_parts)
+            decoded_parts = np.concatenate(decoded_parts)
+            for i in range(0,self.calculate_overflow()):
+                decoded_parts = np.delete(decoded_parts,len(decoded_parts)-1)
+            
+            return decoded_parts   
