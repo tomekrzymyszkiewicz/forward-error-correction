@@ -73,6 +73,11 @@ class Image_message:
             additional_zeros =  (int(len(bits)/code.dimension+1) * code.dimension) - len(bits)
             return additional_zeros
 
+    def calculate_zeros_addition_Single_Parity_Check(self,parameter):
+            bits = np.array(self.image_bits)
+            code = komm.SingleParityCheckCode(parameter)
+            additional_zeros =  (int(len(bits)/code.dimension+1) * code.dimension) - len(bits)
+            return additional_zeros
 
     def hamming_encode(self,parameter):
         """ Hamming code encoding method for image pixels
@@ -175,4 +180,56 @@ class Image_message:
                     decoded_parts = np.delete(decoded_parts,len(decoded_parts)-1)
             
             return decoded_parts
+
+    def ParityCheck_encode(self,parameter):
+        """ Single Parity Check encoding method 
+        """
+
+        bits = np.array(self.image_bits)
+        code = komm.SingleParityCheckCode(parameter)
+        
+        if (len(bits)%code.dimension > 0):
+            
+            bits = np.append(bits, [np.zeros(self.calculate_zeros_addition_Single_Parity_Check(parameter),dtype = np.uint8)])
+            number_of_arrays = int(len(bits)/code.dimension)
+            parts_to_encode = np.reshape(bits,(number_of_arrays,-1),order ='C')
+
+            encoded_parts =[]
+            for i in range (0, len(parts_to_encode)):
+                encoded_part =  code.encode(parts_to_encode[i])
+                encoded_parts.append(encoded_part)
+            encoded_parts = np.array(encoded_parts)
+
+            return encoded_parts
+
+        elif (len(bits)%code.dimension == 0):
+            number_of_arrays = int(len(bits)/code.dimension)
+            parts_to_encode = np.reshape(bits,(number_of_arrays,-1),order ='C')
+
+            encoded_parts =[]
+            for i in range (0, len(parts_to_encode)):
+                encoded_part =  code.encode(parts_to_encode[i])
+                encoded_parts.append(encoded_part)
+            encoded_parts = np.array(encoded_parts)
+
+            return encoded_parts
+
+    def ParityCheck_decode(self,encoded_parts,parameter):
+            """Single Parity Check decoding method 
+            """
+            code = komm.SingleParityCheckCode(parameter)
+            decoded_parts = []
+            for i in range (0, len(encoded_parts)):
+                decoded_part = code.decode(encoded_parts[i])
+                decoded_parts.append(decoded_part)
+            
+            decoded_parts = np.array(decoded_parts)
+            decoded_parts = np.concatenate(decoded_parts)
+            if(len(self.image_bits)%code.dimension != 0):
+                for i in range(0,self.calculate_zeros_addition_Single_Parity_Check(parameter)):
+                    decoded_parts = np.delete(decoded_parts,len(decoded_parts)-1)
+            
+            return decoded_parts
+
+    
 
