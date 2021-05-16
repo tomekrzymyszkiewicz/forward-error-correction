@@ -2,6 +2,7 @@ from Channel import Channel
 from Message import Image_message
 import komm as komm
 
+
 test_image_file_name = "test_image.jpeg"
 saved_test_image = "save_image.jpeg"
 
@@ -14,6 +15,8 @@ def main():
 
     decoded_message = image.BCH_decode(encoded_message,5,3)
     image.image_bits = decoded_message
-    image.save(saved_test_image)
 
+    image.save(saved_test_image)
+    
+  
 main()

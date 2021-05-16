@@ -175,3 +175,4 @@ class Image_message:
                     decoded_parts = np.delete(decoded_parts,len(decoded_parts)-1)
             
             return decoded_parts
+
