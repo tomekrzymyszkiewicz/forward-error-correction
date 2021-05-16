@@ -1,7 +1,5 @@
 from PIL import Image
 import numpy as np
-from functools import reduce
-from operator import xor
 import komm as komm
 
 test_image_file_name = "test_image.jpeg"
@@ -63,20 +61,29 @@ class Image_message:
                     decoded_binary_image_bits[i] = third[i]
             return decoded_binary_image_bits
 
-    def calculate_overflow(self):
+    def calculate_zeros_addition_Hamming(self,parameter):
         bits = np.array(self.image_bits)
-        code = komm.HammingCode(10)
+        code = komm.HammingCode(parameter)
         additional_zeros =  (int(len(bits)/code.dimension+1) * code.dimension) - len(bits)
         return additional_zeros
 
-    def hamming_encode(self):
+    def calculate_zeros_addition_BCH(self,parameter,correcting_capability):
+            bits = np.array(self.image_bits)
+            code = komm.BCHCode(parameter,correcting_capability)
+            additional_zeros =  (int(len(bits)/code.dimension+1) * code.dimension) - len(bits)
+            return additional_zeros
+
+
+    def hamming_encode(self,parameter):
+        """ Hamming code encoding method for image pixels
+        """
+
         bits = np.array(self.image_bits)
-        code = komm.HammingCode(10)
+        code = komm.HammingCode(parameter)
         
         if (len(bits)%code.dimension > 0):
             
-            additional_zeros =  (int(len(bits)/code.dimension+1) * code.dimension) - len(bits)
-            bits = np.append(bits, [np.zeros(additional_zeros,dtype = np.uint8)])
+            bits = np.append(bits, [np.zeros(self.calculate_zeros_addition_Hamming(parameter),dtype = np.uint8)])
             number_of_arrays = int(len(bits)/code.dimension)
             parts_to_encode = np.reshape(bits,(number_of_arrays,-1),order ='C')
 
@@ -101,9 +108,10 @@ class Image_message:
             return encoded_parts
 
 
-    def hamming_decode(self,encoded_parts):
-            
-            code = komm.HammingCode(10)
+    def hamming_decode(self,encoded_parts,parameter):
+            """Decoding method for Hamming code
+            """
+            code = komm.HammingCode(parameter)
             decoded_parts = []
             for i in range (0, len(encoded_parts)):
                 decoded_part = code.decode(encoded_parts[i])
@@ -111,7 +119,59 @@ class Image_message:
             
             decoded_parts = np.array(decoded_parts)
             decoded_parts = np.concatenate(decoded_parts)
-            for i in range(0,self.calculate_overflow()):
-                decoded_parts = np.delete(decoded_parts,len(decoded_parts)-1)
+            if(len(self.image_bits)%code.dimension != 0):
+                for i in range(0,self.calculate_zeros_addition_Hamming(parameter)):
+                    decoded_parts = np.delete(decoded_parts,len(decoded_parts)-1)
             
-            return decoded_parts   
+            return decoded_parts
+
+    def BCH_encode(self,parameter,correcting_capability):
+        """ BCH code encoding method 
+        1 <= correcting_capability < 2^(parameter -1)
+        """
+
+        bits = np.array(self.image_bits)
+        code = komm.BCHCode(parameter,correcting_capability)
+        
+        if (len(bits)%code.dimension > 0):
+            
+            bits = np.append(bits, [np.zeros(self.calculate_zeros_addition_BCH(parameter,correcting_capability),dtype = np.uint8)])
+            number_of_arrays = int(len(bits)/code.dimension)
+            parts_to_encode = np.reshape(bits,(number_of_arrays,-1),order ='C')
+
+            encoded_parts =[]
+            for i in range (0, len(parts_to_encode)):
+                encoded_part =  code.encode(parts_to_encode[i])
+                encoded_parts.append(encoded_part)
+            encoded_parts = np.array(encoded_parts)
+
+            return encoded_parts
+
+        elif (len(bits)%code.dimension == 0):
+            number_of_arrays = int(len(bits)/code.dimension)
+            parts_to_encode = np.reshape(bits,(number_of_arrays,-1),order ='C')
+
+            encoded_parts =[]
+            for i in range (0, len(parts_to_encode)):
+                encoded_part =  code.encode(parts_to_encode[i])
+                encoded_parts.append(encoded_part)
+            encoded_parts = np.array(encoded_parts)
+
+            return encoded_parts
+    
+    def BCH_decode(self,encoded_parts,parameter,correcting_capability):
+            """Decoding method for cyclic BCH code
+            """
+            code = komm.BCHCode(parameter,correcting_capability)
+            decoded_parts = []
+            for i in range (0, len(encoded_parts)):
+                decoded_part = code.decode(encoded_parts[i])
+                decoded_parts.append(decoded_part)
+            
+            decoded_parts = np.array(decoded_parts)
+            decoded_parts = np.concatenate(decoded_parts)
+            if(len(self.image_bits)%code.dimension != 0):
+                for i in range(0,self.calculate_zeros_addition_BCH(parameter,correcting_capability)):
+                    decoded_parts = np.delete(decoded_parts,len(decoded_parts)-1)
+            
+            return decoded_parts
