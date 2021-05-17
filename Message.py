@@ -34,7 +34,7 @@ class Image_message:
         bits = np.array((self.image_bits))
         trippled_binary_image_bits = np.repeat(bits, 3)
         return trippled_binary_image_bits
-    #TODO: Statystyki Potrajanie bitów metodą AAABBBCCC - zakodowana potrojona wiadomość 
+    #TODO: Statystyki Potrajanie bitów metodą AAABBBCCC - zakodowana potrojona wiadomość
 
     def bits_trippling_2(self):
         """Function which return trippled bits in order abcabcabc
@@ -116,7 +116,7 @@ class Image_message:
 
             return encoded_parts
     #TODO: Statystyki Hamming - zwraca wiadomość z nadmiarem informacyjnym (bez dodatkowych zer bo iwadomość jest podzielna przez długość potrzebną do zakodowania)
-
+    
     def hamming_decode(self,encoded_parts,parameter):
             """Decoding method for Hamming code
             """
