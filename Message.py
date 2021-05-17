@@ -5,7 +5,9 @@ import komm as komm
 test_image_file_name = "test_image.jpeg"
 saved_test_image = "save_image.jpeg"
 
+
 class Image_message:
+
     def __init__(self,file_name):
         """Load data from file and get size and pixel data (as 'image_bits')
         """
@@ -32,7 +34,7 @@ class Image_message:
         bits = np.array((self.image_bits))
         trippled_binary_image_bits = np.repeat(bits, 3)
         return trippled_binary_image_bits
-    
+    #TODO: Statystyki Potrajanie bitów metodą AAABBBCCC - zakodowana potrojona wiadomość 
 
     def bits_trippling_2(self):
         """Function which return trippled bits in order abcabcabc
@@ -40,7 +42,7 @@ class Image_message:
         bits = np.array((self.image_bits))
         trippled_bits = np.append(bits,[bits,bits])
         return trippled_bits
-
+    #TODO: Statystyki Potrajanie bitów metodą ABCABCABC - zakodowana potrojona wiadomość 
 
     def decode_trippled_bits(self, trippled_binary_array,order_char):
             """Function that decodes trippled bits
@@ -60,6 +62,7 @@ class Image_message:
                 else:
                     decoded_binary_image_bits[i] = third[i]
             return decoded_binary_image_bits
+     #TODO: Statystyki Potrajanie bitów metodą ABCABCABC i AAABBBCCC - w zaleności od parametru order stosowana jest dla danej metody, zwraca odkodowny ciąg bitów (dla AAABBBCCC order_char jest F, dla ABCABCABC order_char jest C)
 
     def calculate_zeros_addition_Hamming(self,parameter):
         bits = np.array(self.image_bits)
@@ -99,6 +102,7 @@ class Image_message:
             encoded_parts = np.array(encoded_parts)
 
             return encoded_parts
+    #TODO: Statystyki Hamming - zwraca wiadomość z nadmiarem informacyjnym i posiada dodatkowe zera na końcu (gdy długość nie jest podzelna przez długość potrzebną do zakodowania) 
 
         elif (len(bits)%code.dimension == 0):
             number_of_arrays = int(len(bits)/code.dimension)
@@ -111,7 +115,7 @@ class Image_message:
             encoded_parts = np.array(encoded_parts)
 
             return encoded_parts
-
+    #TODO: Statystyki Hamming - zwraca wiadomość z nadmiarem informacyjnym (bez dodatkowych zer bo iwadomość jest podzielna przez długość potrzebną do zakodowania)
 
     def hamming_decode(self,encoded_parts,parameter):
             """Decoding method for Hamming code
@@ -129,6 +133,7 @@ class Image_message:
                     decoded_parts = np.delete(decoded_parts,len(decoded_parts)-1)
             
             return decoded_parts
+        #TODO: Statystyki Hamming- odkodowana wiadomość i usunięte dodatkowe zera 
 
     def BCH_encode(self,parameter,correcting_capability):
         """ BCH code encoding method 
@@ -151,6 +156,7 @@ class Image_message:
             encoded_parts = np.array(encoded_parts)
 
             return encoded_parts
+        #TODO: Statystyki BCH - zwraca wiadomość z nadmiarem informacyjnym i posiada dodatkowe zera na końcu (gdy długość nie jest podzelna przez długość potrzebną do zakodowania) 
 
         elif (len(bits)%code.dimension == 0):
             number_of_arrays = int(len(bits)/code.dimension)
@@ -163,7 +169,8 @@ class Image_message:
             encoded_parts = np.array(encoded_parts)
 
             return encoded_parts
-    
+        #TODO: Statystyki BCH - zwraca wiadomość z nadmiarem informacyjnym (bez dodatkowych zer bo iwadomość jest podzielna przez długość potrzebną do zakodowania)
+
     def BCH_decode(self,encoded_parts,parameter,correcting_capability):
             """Decoding method for cyclic BCH code
             """
@@ -181,6 +188,8 @@ class Image_message:
             
             return decoded_parts
 
+        #TODO: Statystyki BCH- odkodowana wiadomość i usunięte dodatkowe zera 
+    
     def ParityCheck_encode(self,parameter):
         """ Single Parity Check encoding method 
         """
@@ -189,7 +198,6 @@ class Image_message:
         code = komm.SingleParityCheckCode(parameter)
         
         if (len(bits)%code.dimension > 0):
-            
             bits = np.append(bits, [np.zeros(self.calculate_zeros_addition_Single_Parity_Check(parameter),dtype = np.uint8)])
             number_of_arrays = int(len(bits)/code.dimension)
             parts_to_encode = np.reshape(bits,(number_of_arrays,-1),order ='C')
@@ -201,8 +209,9 @@ class Image_message:
             encoded_parts = np.array(encoded_parts)
 
             return encoded_parts
-
+        #TODO: Statystyki BCH - zwraca wiadomość z nadmiarem informacyjnym i posiada dodatkowe zera na końcu (gdy długość nie jest podzelna przez długość potrzebną do zakodowania) 
         elif (len(bits)%code.dimension == 0):
+           
             number_of_arrays = int(len(bits)/code.dimension)
             parts_to_encode = np.reshape(bits,(number_of_arrays,-1),order ='C')
 
@@ -213,6 +222,7 @@ class Image_message:
             encoded_parts = np.array(encoded_parts)
 
             return encoded_parts
+        #TODO: Statystyki ParityCheck - zwraca wiadomość z nadmiarem informacyjnym (bez dodatkowych zer bo wiadomość jest podzielna przez długość potrzebną do zakodowania)
 
     def ParityCheck_decode(self,encoded_parts,parameter):
             """Single Parity Check decoding method 
@@ -230,6 +240,8 @@ class Image_message:
                     decoded_parts = np.delete(decoded_parts,len(decoded_parts)-1)
             
             return decoded_parts
+     #TODO: Statystyki ParityCheck- odkodowana wiadomość i usunięte dodatkowe zera 
 
-    
-
+    def array_to_decode(self,number_of_arrays, array):
+        decode_array = np.reshape(array,(number_of_arrays,-1),order ='C')
+        return decode_array
