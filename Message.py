@@ -245,3 +245,96 @@ class Image_message:
     def array_to_decode(self,number_of_arrays, array):
         decode_array = np.reshape(array,(number_of_arrays,-1),order ='C')
         return decode_array
+
+class CorectionCodes:
+    def __init__(self):
+        """Load message bits
+        """
+
+    def __init__(self, message_bits):
+        """Load message bits
+        """
+        self.message_bits = message_bits
+
+
+    def hamming_code(message_bits):
+        """Hamming code(7,4) 
+        """
+        haming_coded_bits = []
+        i = 0
+        j = 0
+        while i < len(message_bits):
+            if i + 3 >= len(message_bits):
+                break
+            for x in range(0, 7):
+                haming_coded_bits.append(0)
+        
+            haming_coded_bits[j] = message_bits[i]
+            haming_coded_bits[j + 1] = message_bits[i + 1]
+            haming_coded_bits[j + 2] = message_bits[i + 2]
+            haming_coded_bits[j + 4] = message_bits[i + 3]
+
+            redundancy = 0
+            iterator = 0
+            for x in range(7, 0, -1):
+                if haming_coded_bits[j + iterator] == 1:
+                    redundancy = redundancy ^ x
+                iterator += 1    
+        
+            haming_coded_bits[j + 3] = int(redundancy & 4 > 0)
+            haming_coded_bits[j + 5] = int(redundancy & 2 > 0)
+            haming_coded_bits[j + 6] = int(redundancy & 1 > 0)
+            
+            i += 4
+            j += 7
+        while i < len(message_bits):
+            haming_coded_bits.append(0)
+            haming_coded_bits[j] = message_bits[i]
+            haming_coded_bits[j] = message_bits[i]
+            i += 1
+
+        return haming_coded_bits
+
+    def decode_hamming_code(haming_coded_bits):
+        """Decode Hamming code(7,4) 
+        """
+        decoded_haming_coded_bits = []
+        i = 0
+        j = 0
+        while i < len(haming_coded_bits):
+            if i + 6 >= len(haming_coded_bits):
+                break
+            for x in range(0, 4):
+                decoded_haming_coded_bits.append(0)
+    
+            decoded_haming_coded_bits[j] = haming_coded_bits[i]
+            decoded_haming_coded_bits[j + 1] = haming_coded_bits[i + 1]
+            decoded_haming_coded_bits[j + 2] = haming_coded_bits[i + 2]
+            decoded_haming_coded_bits[j + 3] = haming_coded_bits[i + 4]
+    
+            detection = 0
+            iterator = 0
+            for x in range(7, 0, -1):
+                if haming_coded_bits[i + iterator] == 1:
+                    detection = detection ^ x
+                iterator += 1    
+
+            if detection == 7:
+                decoded_haming_coded_bits[j] =  int(not decoded_haming_coded_bits[j])
+            if detection == 6:
+                decoded_haming_coded_bits[j + 1] =  int(not decoded_haming_coded_bits[j + 1])
+            if detection == 5:
+                decoded_haming_coded_bits[j + 2] =  int(not decoded_haming_coded_bits[j + 1])
+            if detection == 3:
+                decoded_haming_coded_bits[j + 3] =  int(not decoded_haming_coded_bits[j + 1])
+              
+            i += 7
+            j += 4
+
+        while i < len(haming_coded_bits): 
+            decoded_haming_coded_bits.append(0)
+            decoded_haming_coded_bits[j] = haming_coded_bits[i]
+            decoded_haming_coded_bits[j] = haming_coded_bits[i]
+            i += 1
+
+        return decoded_haming_coded_bits

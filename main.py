@@ -8,6 +8,17 @@ test_image_file_name = "test_image.jpeg"
 saved_test_image = "save_image.jpeg"
 
 def main():
+ #tak uzywac channel
+##########################################################################################################
+    image = Image_message(test_image_file_name)
+    trippled_message = image.bits_trippling()
+    trippled_message_with_errors = Channel.random_error_number(trippled_message, 400000)
+    decoded__message = Image_message.decode_trippled_bits(image,trippled_message_with_errors)
+    image.image_bits = decoded__message
+    image.save(saved_test_image)
+############################################################################################################
+
+
     image = Image_message(test_image_file_name)
 
     # encoded_message = image.bits_trippling_1() # bits trippling
