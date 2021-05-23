@@ -2,31 +2,12 @@ from PIL import Image
 import numpy as np
 import komm as komm
 
-test_image_file_name = "test_image.jpeg"
-saved_test_image = "save_image.jpeg"
+class CorectionCodes:
 
-
-class Image_message:
-
-    def __init__(self,file_name):
+    def __init__(self,bits):
         """Load data from file and get size and pixel data (as 'image_bits')
         """
-        try:
-            image  = Image.open(file_name)
-        except IOError:
-            print("Image loading error")
-        self.size = image.size
-        pixels = np.asarray(image, dtype=np.uint8)
-        self.image_bits = np.unpackbits(pixels)
-
-
-    def save(self,file_name):
-        """Save image to file with current pixel data (as 'image_bits')
-        """
-        packed_bits = np.packbits(self.image_bits)
-        packed_bits_reshaped = np.reshape(packed_bits,(self.size[1],self.size[0],3))
-        image = Image.fromarray(packed_bits_reshaped)
-        image.save(file_name)
+        self.image_bits = bits
 
     def bits_trippling_1(self):
         """Function which return trippled bits in order aaabbbccc
@@ -237,18 +218,7 @@ class Image_message:
         decode_array = np.reshape(array,(number_of_arrays,-1),order ='C')
         return decode_array
 
-class CorectionCodes:
-    def __init__(self):
-        """Load message bits
-        """
-
-    def __init__(self, message_bits):
-        """Load message bits
-        """
-        self.message_bits = message_bits
-
-
-    def hamming_code(message_bits):
+    def encode_hamming(message_bits): #cmpare with haming from library, our implementation
         """Hamming code(7,4) 
         """
         haming_coded_bits = []
@@ -286,7 +256,7 @@ class CorectionCodes:
 
         return haming_coded_bits
 
-    def decode_hamming_code(haming_coded_bits):
+    def decode_hamming(haming_coded_bits):
         """Decode Hamming code(7,4) 
         """
         decoded_haming_coded_bits = []
