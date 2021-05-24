@@ -1,3 +1,4 @@
+from Results import Results
 from Channel import Channel
 from Message import Image_message
 from CorectionCodes import CorectionCodes
@@ -7,6 +8,8 @@ import komm as komm
 
 test_image_file_name = "test_image.jpeg"
 saved_test_image = "save_image.jpeg"
+results = Results()
+results_file_name = 'test_result_file.csv'
 
 def main():
 
@@ -78,6 +81,13 @@ def main():
     # decoded_message = image.ParityCheck_decode(encoded_meassage_with_error_to_decode,10)
     #image.image_bits = decoded_message
 
+
+    image.save(saved_test_image)
+
+    results.add_result(image.image_bits,concated,decoded_message,'BCD',100)
+    results.print_results()
+    results.save_to_file(results_file_name)
     #image.save(saved_test_image)
   
+
 main()
