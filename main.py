@@ -30,12 +30,16 @@ def main():
     image.image_bits = decoded_message
     #image.save(saved_test_image)
 
+    results.add_result(image.image_bits,encoded_message,decoded_message,'Hamming10',100000)
+
     encoded_message = corectionCodes.ParityCheck_encode(10)
     encoded_message_with_errors = Channel.random_error_number(np.concatenate(encoded_message), 100000) 
     encoded_meassage_with_error_to_decode = corectionCodes.array_to_decode(len(encoded_message),encoded_message_with_errors)
     decoded_message = corectionCodes.ParityCheck_decode(encoded_meassage_with_error_to_decode,10)
     image.image_bits = decoded_message
     #image.save(saved_test_image)
+
+    results.add_result(image.image_bits,encoded_message,decoded_message,'ParityCheck10',100000)
 
     encoded_message = corectionCodes.bits_trippling_1()
     encoded_message_with_errors = Channel.random_error_number(encoded_message, 100000) 
@@ -44,6 +48,8 @@ def main():
     image.image_bits = decoded_message
     #image.save(saved_test_image)
 
+    results.add_result(image.image_bits,encoded_message,decoded_message,'triplingaabbcc',100000)
+
     encoded_message = corectionCodes.bits_trippling_2()
     encoded_message_with_errors = Channel.random_error_number(encoded_message, 100000) 
     encoded_meassage_with_error_to_decode = corectionCodes.array_to_decode(len(encoded_message),encoded_message_with_errors)
@@ -51,13 +57,16 @@ def main():
     image.image_bits = decoded_message
     #image.save(saved_test_image)
 
+    results.add_result(image.image_bits,encoded_message,decoded_message,'triplingabcabcabc',100000)
+
     encoded_message = CorectionCodes.encode_hamming(image.image_bits)
     encoded_message_with_errors = Channel.random_error_number(encoded_message, 100000)
     decoded__message = CorectionCodes.decode_hamming(encoded_message_with_errors)
     image.image_bits = decoded__message
     image.save(saved_test_image)
 
-    results.add_result(image.image_bits,concated,decoded_message,'BCD',100)
+    results.add_result(image.image_bits,encoded_message,decoded_message,'hamming7',100000)
+
     results.print_results()
     results.save_to_file(results_file_name)
   
