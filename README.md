@@ -16,8 +16,8 @@ Tomasz Rzymyszkiewicz
 - generating disturabance in forwarded data
 - coding data with algotirhms
   - Hamming code
-  - tripling bits (aaabbccc)
-  - tripling bits (abcabcabc)
+  - tripling bits (aaa bbb ccc)
+  - tripling bits (abc abc abc)
   - BCH
 - decoding data and errors correction
 - analizing and comparing results
