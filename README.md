@@ -16,8 +16,8 @@ Tomasz Rzymyszkiewicz
 - generating disturabance in forwarded data
 - coding data with algotirhms
   - Hamming code
-  - tripling bits
-  - PCH
-  - Reed-Solomon code
+  - tripling bits (aaabbccc)
+  - tripling bits (abcabcabc)
+  - BCH
 - decoding data and errors correction
 - analizing and comparing results

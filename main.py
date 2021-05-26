@@ -32,15 +32,6 @@ def main():
 
     results.add_result(image.image_bits,encoded_message,decoded_message,'Hamming10',100000)
 
-    encoded_message = corectionCodes.ParityCheck_encode(10)
-    encoded_message_with_errors = Channel.random_error_number(np.concatenate(encoded_message), 100000) 
-    encoded_meassage_with_error_to_decode = corectionCodes.array_to_decode(len(encoded_message),encoded_message_with_errors)
-    decoded_message = corectionCodes.ParityCheck_decode(encoded_meassage_with_error_to_decode,10)
-    image.image_bits = decoded_message
-    #image.save(saved_test_image)
-
-    results.add_result(image.image_bits,encoded_message,decoded_message,'ParityCheck10',100000)
-
     encoded_message = corectionCodes.bits_trippling_1()
     encoded_message_with_errors = Channel.random_error_number(encoded_message, 100000) 
     encoded_meassage_with_error_to_decode = corectionCodes.array_to_decode(len(encoded_message),encoded_message_with_errors)
