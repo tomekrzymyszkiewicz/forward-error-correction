@@ -7,6 +7,5 @@ class Generator:
         for x in range(0, bits_number):
             value = randint(0, 1)
             bits.append(value)
-        print(bits)
         return bits
 
