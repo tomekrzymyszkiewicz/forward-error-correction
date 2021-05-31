@@ -3,6 +3,7 @@ import numpy as np
 import random
 
 from numpy.core.fromnumeric import size
+from numpy.random import random_integers
 
 class Channel:
     def __init__(self, bits_array):
@@ -30,8 +31,9 @@ class Channel:
     def random_noise(bits, space):                                 
         """generating single mistake averge every "space" in channel
         """
+        i = 0
         while i < len(bits):
-            corect = group = random.gauss(space, 1)
+            corect = int(random.gauss(space, 1))
             bits[i] = (bits[i]+1)%2
             i = i + corect;
         return bits
@@ -40,22 +42,39 @@ class Channel:
     def group_noise(bits, space, averge_group_size):        
         """generating group of mistakes averge every "space" in channel, size of group averge "averge_group_size"
         """
-        group = random.gauss(averge_group_size, 1)
+        i = 0
         while i < len(bits):
-            corect = group = random.gauss(space, 1)
+            group = int(random.gauss(averge_group_size, 1))
+            if (group < 0):
+                group = 0;
+            space = int(random.gauss(space, 1))
+            if (space < 0):
+                space = 0
+
             for x in range(0, group):
-                bits[x] = (bits[x]+1)%2
-            i = i + group + corect;
+                if (i + x >= len(bits)):
+                    return bits
+                bits[i + x] = (bits[i + x]+1)%2
+            i = i + group + space;
         return bits
 
     def group_noise_signal(bits, space, averge_group_size):      
         """generating group of signal 0/1 averge every "space" in channel, size of group averge "averge_group_size"
         """
-        group = random.gauss(averge_group_size, 1)
+        i = 0
         while i < len(bits):
-            corect = group = random.gauss(space, 1)
-            signal = random.randint(0, 1)
+            group = int(random.gauss(averge_group_size, 1))
+            if (group < 0):
+                group = 0;
+            space = int(random.gauss(space, 1))
+            if (space < 0):
+                space = 0
+
+            signal = int(random.randint(0, 1))
             for x in range(0, group):
-                bits[x] = signal
-            i = i + group + corect;
+                if (i + x >= len(bits)):
+                    return bits
+                bits[i + x] = signal
+            i = i + group + space;
         return bits
+

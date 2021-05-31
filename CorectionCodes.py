@@ -170,7 +170,7 @@ class CorectionCodes:
         decode_array = np.reshape(array,(number_of_arrays,-1),order ='C')
         return decode_array
 
-    def encode_hamming(message_bits): #cmpare with haming from library, our implementation
+    def encode_hamming(message_bits): #compare with haming from library, our implementation
         """Hamming code(7,4) 
         """
         haming_coded_bits = []

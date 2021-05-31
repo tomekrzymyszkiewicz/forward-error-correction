@@ -2,6 +2,7 @@ from Results import Results
 from Channel import Channel
 from Message import Image_message
 from CorectionCodes import CorectionCodes
+from Generator import Generator
 import numpy as np
 import komm as komm
 
@@ -12,7 +13,6 @@ results = Results()
 results_file_name = 'test_result_file.csv'
 
 def main():
-
     image = Image_message(test_image_file_name)
     corectionCodes = CorectionCodes(image.image_bits)
 
@@ -26,7 +26,7 @@ def main():
     encoded_message = corectionCodes.hamming_encode(10)
     encoded_message_with_errors = Channel.random_error_number(np.concatenate(encoded_message), 100000) 
     encoded_meassage_with_error_to_decode = corectionCodes.array_to_decode(len(encoded_message),encoded_message_with_errors)
-    decoded_message = image.hamming_decode(encoded_meassage_with_error_to_decode, 10)
+    decoded_message = corectionCodes.hamming_decode(encoded_meassage_with_error_to_decode, 10)
     image.image_bits = decoded_message
     #image.save(saved_test_image)
 
@@ -56,7 +56,7 @@ def main():
     image.image_bits = decoded__message
     image.save(saved_test_image)
 
-    results.add_result(image.image_bits,encoded_message,decoded_message,'hamming7',100000)
+    results.add_result(image.image_bits,encoded_message,decoded_message,'hamming(7,4)',100000)
 
     results.print_results()
     results.save_to_file(results_file_name)
